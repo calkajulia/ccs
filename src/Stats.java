@@ -61,7 +61,7 @@ public class Stats {
 
     public synchronized String getStats() {
         String stats = "--- STATS ---\n" +
-                "Stats since start | Last 10s stats\n\n" +
+                "since start | last 10s\n\n" +
                 "Connected clients: " + CONNECTED_CLIENTS + " | " + LAST_10_SEC_CONNECTED_CLIENTS + '\n' +
                 "Total operations: " + TOTAL_OPERATIONS + " | " + LAST_10_SEC_TOTAL_OPERATIONS + '\n' +
                 "   ADD: " + ADD_OPERATIONS + " | " + LAST_10_SEC_ADD_OPERATIONS + '\n' +

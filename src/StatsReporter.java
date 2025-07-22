@@ -17,7 +17,7 @@ public class StatsReporter implements Runnable {
                     System.out.println(stats.getStats());
                 }
             } catch (InterruptedException e) {
-                Log.log("Program failed on logging." + e.getMessage());
+                Log.log("Error in stats reporting: " + e.getMessage());
             }
         }
     }

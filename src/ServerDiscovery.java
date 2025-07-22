@@ -1,7 +1,5 @@
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketException;
 
 public class ServerDiscovery implements Runnable {
 
@@ -13,9 +11,10 @@ public class ServerDiscovery implements Runnable {
 
     @Override
     public void run() {
-        try {
-            DatagramSocket socket = new DatagramSocket(port);
-            while(true){
+        try(DatagramSocket socket = new DatagramSocket(port)) {
+            Log.log("UDP discovery service started on port " + port + ".");
+
+            while(true) {
                 byte[] messageBuffer = new byte[1024];
                 DatagramPacket messagePacket = new DatagramPacket(messageBuffer, messageBuffer.length);
                 socket.receive(messagePacket);
@@ -33,10 +32,8 @@ public class ServerDiscovery implements Runnable {
                     Log.log("Discovery response sent: " + response);
                 }
             }
-        } catch (SocketException e) {
-            Log.log("Program failed on server discovery" + e.getMessage());
-        } catch (IOException e) {
-            Log.log("Program failed on server discovery" + e.getMessage());
+        } catch (Exception e) {
+            Log.log("Error in UDP discovery service: " + e.getMessage());
         }
     }
 }

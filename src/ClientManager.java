@@ -13,9 +13,8 @@ public class ClientManager implements Runnable {
 
     @Override
     public void run() {
-        try {
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
             String message = reader.readLine();
             while(message != null) {
@@ -27,7 +26,15 @@ public class ClientManager implements Runnable {
                 message = reader.readLine();
             }
         } catch (IOException e) {
-            Log.log("Program failed on managing clients." + e.getMessage());
+            Log.log("Error handling client: " + e.getMessage());
+        } finally {
+            try {
+                if(!socket.isClosed()) {
+                    socket.close();
+                }
+            } catch (IOException e) {
+                Log.log("Error closing client socket: " + e.getMessage());
+            }
         }
     }
 
@@ -45,11 +52,6 @@ public class ClientManager implements Runnable {
             stats.incrementErrorOperations();
             return "ERROR";
         }
-        if(arg2 == 0) {
-            stats.incrementErrorOperations();
-            return "ERROR";
-        }
-
         int result;
 
         String operation = message[0];
@@ -67,6 +69,10 @@ public class ClientManager implements Runnable {
                 stats.incrementMulOperations();
                 break;
             case "DIV":
+                if(arg2 == 0) {
+                    stats.incrementErrorOperations();
+                    return "ERROR";
+                }
                 result = arg1 / arg2;
                 stats.incrementDivOperations();
                 break;
